@@ -2,12 +2,9 @@ import React, { useState, useEffect } from 'react';
 import {
   User as UserIcon, // Alias to avoid conflict if User is used elsewhere
   Shield,
-  BellRing,
-  Lock,
   ChevronRight, // Use ChevronRight for the "View" button icon
   Mail, // for email notification toggle
   Bell, // for push notification toggle
-  ShieldCheck,
   LogOut as LogoutIcon,
   Monitor,
   Download,
