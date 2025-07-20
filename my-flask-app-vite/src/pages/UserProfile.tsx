@@ -202,14 +202,29 @@ const UserProfile: React.FC = () => {
         payload[backendMapping[key as keyof typeof backendMapping]] = newSettings[key as keyof typeof newSettings];
       });
 
-      await fetch('/api/user/communication', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(payload)
-      });
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Authentication token not found. Please log in again.');
+        return;
+      }
+
+      try {
+        await fetch('/api/user/communication', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        });
+        toast.success('Communication settings updated successfully!');
+      } catch (err: any) {
+        toast.error(
+          err.response?.data?.error ||
+          err.response?.data?.message ||
+          'Failed to update communication settings.'
+        );
+      }
     };
 
     // Handler for privacy toggle changes
@@ -235,6 +250,12 @@ const UserProfile: React.FC = () => {
        };
 
        // 1. Send the update to the backend
+       const token = localStorage.getItem('token');
+       if (!token) {
+         toast.error('Authentication token not found. Please log in again.');
+         return;
+       }
+
        await userAPI.updateProfile(payload);
        toast.success('Profile updated successfully!');
 
@@ -321,7 +342,12 @@ const UserProfile: React.FC = () => {
     // Placeholder handler for logging out a specific session
    const handleLogoutSession = async (sessionId: number) => {
      try {
-       await api.post(`/api/user/session/${sessionId}/logout`);
+       const token = localStorage.getItem('token');
+       if (!token) {
+         toast.error('Authentication token not found. Please log in again.');
+         return;
+       }
+       await api.post(`/api/user/session/${sessionId}/logout`, { headers: { Authorization: `Bearer ${token}` } });
        toast.success('Session logged out!');
        fetchSessions(); // Refresh after logout
      } catch (err: any) {
@@ -343,8 +369,14 @@ const UserProfile: React.FC = () => {
    const handleDeleteAccount = async () => {
      setIsDeleting(true);
      try {
+       const token = localStorage.getItem('token');
+       if (!token) {
+         toast.error('Authentication token not found. Please log in again.');
+         return;
+       }
        await api.delete('/api/user/account', {
-         data: { password: deletePassword }
+         data: { password: deletePassword },
+         headers: { Authorization: `Bearer ${token}` }
        });
        toast.success('Account deleted successfully!');
        localStorage.removeItem('token');
@@ -368,6 +400,11 @@ const UserProfile: React.FC = () => {
 
   const handleStart2FA = async () => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Authentication token not found. Please log in again.');
+        return;
+      }
       await securityAPI.start2FA({ method: twoFAMethod });
       setShow2FAModal(true);
       toast.success(`OTP sent via ${twoFAMethod.toUpperCase()}`);
@@ -379,6 +416,11 @@ const UserProfile: React.FC = () => {
   const handleVerify2FA = async () => {
     setIsVerifying(true);
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Authentication token not found. Please log in again.');
+        return;
+      }
       await securityAPI.verify2FA({ otp_code: otp });
       toast.success('Two-factor authentication enabled!');
       setSecuritySettings(prev => ({
@@ -397,6 +439,11 @@ const UserProfile: React.FC = () => {
   const handleResend2FAOtp = async () => {
     setIsResending(true);
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Authentication token not found. Please log in again.');
+        return;
+      }
       await securityAPI.start2FA({ method: twoFAMethod });
       toast.success(`OTP resent via ${twoFAMethod.toUpperCase()}`);
     } catch (err: any) {
@@ -413,6 +460,11 @@ const UserProfile: React.FC = () => {
   const handleDisable2FA = async () => {
     setIsDisabling2FA(true);
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Authentication token not found. Please log in again.');
+        return;
+      }
       await securityAPI.disable2FA({ password: disable2FAPassword });
       setSecuritySettings(prev => ({
         ...prev,
@@ -433,7 +485,12 @@ const UserProfile: React.FC = () => {
   const fetchSessions = async () => {
     console.log('Fetching sessions...');
     try {
-      const response = await api.get('/api/user/sessions');
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Authentication token not found. Please log in again.');
+        return;
+      }
+      const response = await api.get('/api/user/sessions', { headers: { Authorization: `Bearer ${token}` } });
       setSessions(response.data);
     } catch (err) {
       toast.error('Failed to load sessions');
@@ -446,7 +503,12 @@ const UserProfile: React.FC = () => {
 
   const handleLogoutAllSessions = async () => {
     try {
-      await api.post('/api/user/sessions/logout_all');
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Authentication token not found. Please log in again.');
+        return;
+      }
+      await api.post('/api/user/sessions/logout_all', { headers: { Authorization: `Bearer ${token}` } });
       toast.success('Logged out from all other sessions!');
       fetchSessions(); // Refresh the session list
     } catch (err: any) {
@@ -455,9 +517,9 @@ const UserProfile: React.FC = () => {
   };
 
   // Helper to filter unique sessions by user_agent and ip_address
-  const getUniqueSessions = (sessions) => {
+  const getUniqueSessions = (sessions: any[]) => {
     const seen = new Set();
-    return sessions.filter(session => {
+    return sessions.filter((session: any) => {
       const key = `${session.user_agent}-${session.ip_address}`;
       if (seen.has(key)) return false;
       seen.add(key);
@@ -1054,6 +1116,11 @@ const UserProfile: React.FC = () => {
     setIsSendingOtp(true);
     setOtpSentMessage('');
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Authentication token not found. Please log in again.');
+        return;
+      }
       await securityAPI.start2FA({ method });
       setOtpSentMessage(
         `OTP has been sent to your ${method === 'email' ? 'email' : 'phone'}`
@@ -1074,6 +1141,11 @@ const UserProfile: React.FC = () => {
   }, [activeTab]);
 
   const fetchCommunicationSettings = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      toast.error('Authentication token not found. Please log in again.');
+      return;
+    }
     const res = await fetch('/api/user/communication', {
       headers: { Authorization: `Bearer ${token}` }
     });
