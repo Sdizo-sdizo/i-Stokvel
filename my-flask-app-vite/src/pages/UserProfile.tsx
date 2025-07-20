@@ -536,7 +536,7 @@ const UserProfile: React.FC = () => {
               onClick={handleViewDetails}
             />
             <InfoCard
-              icon={Lock}
+              icon={Shield}
               title="Account & security"
               description="Password and active sessions"
               onClick={handleViewAccountSecurity}

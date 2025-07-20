@@ -92,8 +92,8 @@ export const stokvelAPI = {
   joinStokvel: (category: string, tier: string, amount: number) =>
     api.post(`/api/stokvel/join-group`, { category, tier, amount }),
   getMyGroups: () => api.get('/api/groups/my-groups'), // or '/api/groups/available' if that's your endpoint
-  getClaimableAmount: (groupId: any) => api.get(`/api/groups/${groupId}/claimable-amount`),
-  getGroupRules: (groupId: any) => api.get(`/api/groups/${groupId}/rules`),
+  getClaimableAmount: (groupId: string) => api.get(`/api/groups/${groupId}/claimable-amount`),
+  getGroupRules: (groupId: string) => api.get(`/api/groups/${groupId}/rules`),
 };
 
 // Admin API calls
@@ -143,7 +143,6 @@ export const dashboardAPI = {
 };
 
 // Polls and Meetings
-// Comment out unused functions
 // const getPolls = async (): Promise<any> => api.get('/api/polls');
 // const createPoll = async (pollData: any): Promise<any> => api.post('/api/polls', pollData);
 // const getMeetings = async (): Promise<any> => api.get('/api/meetings');

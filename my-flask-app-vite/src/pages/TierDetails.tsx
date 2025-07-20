@@ -400,7 +400,7 @@ const TierDetails: React.FC = () => {
             <div className="bg-blue-50 rounded-xl px-8 py-6 mb-6 flex flex-col gap-4">
               <div className="flex flex-row justify-between">
                 <span className="font-medium text-gray-600">Full Name:</span>
-                <span className="font-semibold text-blue-900">{(user && typeof user === 'object' && 'fullName' in user && typeof user.fullName === 'string') ? user.fullName : ""}</span>
+                <span className="font-semibold text-blue-900">{user?.fullName || (user as any)?.full_name || ""}</span>
               </div>
               <div className="flex flex-row justify-between">
                 <span className="font-medium text-gray-600">Email:</span>
@@ -408,11 +408,11 @@ const TierDetails: React.FC = () => {
               </div>
               <div className="flex flex-row justify-between">
                 <span className="font-medium text-gray-600">Category:</span>
-                <span className="font-semibold text-blue-900">{capitalize(typeof category === 'string' ? category : "")}</span>
+                <span className="font-semibold text-blue-900">{capitalize(category || "")}</span>
               </div>
               <div className="flex flex-row justify-between">
                 <span className="font-medium text-gray-600">Tier:</span>
-                <span className="font-semibold text-blue-900">{capitalize(typeof tier === 'string' ? tier : "")}</span>
+                <span className="font-semibold text-blue-900">{capitalize(tier || "")}</span>
               </div>
               <div className="flex flex-row justify-between">
                 <span className="font-medium text-gray-600">Amount:</span>
