@@ -1,0 +1,35 @@
+"""Add group join request model
+
+Revision ID: 9ef91d8d0f82
+Revises: c5493ff0bd32
+Create Date: 2025-06-23 19:09:46.963116
+
+"""
+from alembic import op
+import sqlalchemy as sa
+from sqlalchemy.dialects import postgresql
+
+# revision identifiers, used by Alembic.
+revision = '9ef91d8d0f82'
+down_revision = 'c5493ff0bd32'
+branch_labels = None
+depends_on = None
+
+def upgrade():
+    # op.create_table('group_join_request',
+    #     sa.Column('id', sa.Integer(), nullable=False),
+    #     sa.Column('user_id', sa.Integer(), nullable=False),
+    #     sa.Column('status', sa.String(length=20), nullable=True),
+    #     sa.Column('reason', sa.String(length=255), nullable=True),
+    #     sa.Column('created_at', sa.DateTime(), nullable=True),
+    #     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    #     sa.PrimaryKeyConstraint('id')
+    # )
+    pass
+
+def downgrade():
+    # op.drop_table('group_join_request')
+    pass
+
+
+

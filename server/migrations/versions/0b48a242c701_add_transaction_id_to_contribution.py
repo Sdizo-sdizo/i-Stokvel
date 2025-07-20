@@ -1,0 +1,27 @@
+"""Add transaction_id to contribution
+
+Revision ID: 0b48a242c701
+Revises: c8a7f3cad0ee
+Create Date: 2025-07-12 23:25:07.438288
+
+"""
+from alembic import op
+import sqlalchemy as sa
+
+# revision identifiers, used by Alembic.
+revision = '0b48a242c701'
+down_revision = 'c8a7f3cad0ee'
+branch_labels = None
+depends_on = None
+
+def upgrade():
+    # with op.batch_alter_table('contribution', schema=None) as batch_op:
+    #     batch_op.add_column(sa.Column('transaction_id', sa.Integer(), nullable=True))
+    #     batch_op.create_foreign_key(None, 'transaction', ['transaction_id'], ['id'])
+    pass
+
+def downgrade():
+    # with op.batch_alter_table('contribution', schema=None) as batch_op:
+    #     batch_op.drop_constraint(None, type_='foreignkey')
+    #     batch_op.drop_column('transaction_id')
+    pass

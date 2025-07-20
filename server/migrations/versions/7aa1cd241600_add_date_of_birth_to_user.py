@@ -1,0 +1,25 @@
+"""Add date_of_birth to user
+
+Revision ID: 7aa1cd241600
+Revises: c1d0914af855
+Create Date: 2025-06-20 13:26:25.567351
+
+"""
+from alembic import op
+import sqlalchemy as sa
+
+# revision identifiers, used by Alembic.
+revision = '7aa1cd241600'
+down_revision = 'c1d0914af855'
+branch_labels = None
+depends_on = None
+
+def upgrade():
+    # with op.batch_alter_table('user', schema=None) as batch_op:
+    #     batch_op.add_column(sa.Column('date_of_birth', sa.Date(), nullable=True))
+    pass
+
+def downgrade():
+    # with op.batch_alter_table('user', schema=None) as batch_op:
+    #     batch_op.drop_column('date_of_birth')
+    pass
