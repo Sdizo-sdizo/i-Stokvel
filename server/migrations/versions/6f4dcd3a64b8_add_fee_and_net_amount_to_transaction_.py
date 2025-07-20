@@ -39,11 +39,11 @@ def downgrade():
 
     op.create_table(
         'beneficiary',
-        sa.Column('id', sa.INTEGER(), autoincrement=True, nullable=False),
-        sa.Column('user_id', sa.INTEGER(), autoincrement=False, nullable=False),
-        sa.Column('name', sa.VARCHAR(length=100), autoincrement=False, nullable=False),
-        sa.Column('account_number', sa.VARCHAR(length=20), autoincrement=False, nullable=False),
-        sa.Column('created_at', postgresql.TIMESTAMP(), autoincrement=False, nullable=True),
-        sa.ForeignKeyConstraint(['user_id'], ['user.id'], name=op.f('beneficiary_user_id_fkey')),
-        sa.PrimaryKeyConstraint('id', name=op.f('beneficiary_pkey'))
+    sa.Column('id', sa.INTEGER(), autoincrement=True, nullable=False),
+    sa.Column('user_id', sa.INTEGER(), autoincrement=False, nullable=False),
+    sa.Column('name', sa.VARCHAR(length=100), autoincrement=False, nullable=False),
+    sa.Column('account_number', sa.VARCHAR(length=20), autoincrement=False, nullable=False),
+    sa.Column('created_at', postgresql.TIMESTAMP(), autoincrement=False, nullable=True),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], name=op.f('beneficiary_user_id_fkey')),
+    sa.PrimaryKeyConstraint('id', name=op.f('beneficiary_pkey'))
     )

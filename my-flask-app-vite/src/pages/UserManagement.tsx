@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Search, Filter, Download, RefreshCw, MessageSquare, 
-  CheckCircle, Ban, User, Mail, Phone, Calendar, 
-  Users, Crown, Clock, AlertTriangle, Shield, Star, 
-  MoreHorizontal, Eye, Edit, Trash2, UserPlus,
-  TrendingUp, TrendingDown, Activity, Zap, Sparkles
+  Search, Filter, Download, User, 
+  MoreHorizontal, Eye, Edit, MessageSquare
 } from 'lucide-react';
 import { dashboardAPI } from '../services/api';
 
@@ -50,16 +47,6 @@ const UserManagement: React.FC = () => {
 
     fetchUsers();
   }, []);
-
-  // Calculate stats
-  const stats = {
-    total: users.length,
-    active: users.filter(u => !u.is_suspended).length,
-    verified: users.filter(u => u.is_verified).length,
-    pending: users.filter(u => !u.is_verified).length,
-    highValue: users.filter(u => (u.total_contributions || 0) > 5000).length,
-    engaged: users.filter(u => u.engagement_level === 'high').length,
-  };
 
   // Filter users
   const filteredUsers = users.filter(user => {
@@ -135,7 +122,7 @@ const UserManagement: React.FC = () => {
             Export
           </button>
           <button className="inline-flex items-center px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-            <UserPlus className="w-4 h-4 mr-2" />
+            <User className="w-4 h-4 mr-2" />
             Add User
           </button>
         </div>

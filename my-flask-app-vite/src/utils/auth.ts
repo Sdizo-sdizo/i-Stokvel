@@ -1,23 +1,6 @@
 import { authAPI } from '../services/api';
 import api from '../services/api';
 
-interface User {
-  fullName: string;
-  email: string;
-  password: string;
-  phoneNumber?: string;
-  idNumber?: string;
-  role?: string;
-  is_verified?: boolean;
-  profile_picture?: string;
-}
-
-interface AuthResponse {
-  success: boolean;
-  message: string;
-  user?: User;
-}
-
 export const signup = async (userData: {
   fullName: string;
   email: string;
@@ -105,13 +88,13 @@ export const logout = () => {
     localStorage.removeItem('user');
     
     // Attempt to call logout endpoint
-    authAPI.post('/api/auth/logout').catch(error => {
+    api.post('/api/auth/logout').catch((error: any) => {
       console.error('Logout API call failed:', error);
     });
     
     // Redirect to login page
     window.location.href = '/login';
-  } catch (error) {
+  } catch (error: any) {
     console.error('Logout error:', error);
     // Force redirect even if there's an error
     window.location.href = '/login';
@@ -253,6 +236,6 @@ export const resendSmsVerificationCode = async (phone: string) => {
 export async function sendSmsVerificationCode(phone: string) {
   // Use the axios instance directly
   return api.post('/api/auth/send-otp', { phone })
-    .then(res => res.data)
-    .catch(err => ({ success: false, message: err?.response?.data?.message || 'Failed to send code' }));
+    .then((res: any) => res.data)
+    .catch((err: any) => ({ success: false, message: err?.response?.data?.message || 'Failed to send code' }));
 }

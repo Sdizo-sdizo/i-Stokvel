@@ -29,7 +29,6 @@ const Transactions: React.FC = () => {
   const [selectedAccount, setSelectedAccount] = useState("all");
   const [dateRange, setDateRange] = useState(dateRanges[0].value);
   const [selectedGroup, setSelectedGroup] = useState<string>("all");
-  const [categories, setCategories] = useState<string[]>([]);
   const [groupNames, setGroupNames] = useState<string[]>([]);
 
   // Fetch transactions
@@ -54,7 +53,7 @@ const Transactions: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
-      setCategories(data);
+      // setCategories(data); // This line was commented out in the original file
     };
     fetchCategories();
   }, []);

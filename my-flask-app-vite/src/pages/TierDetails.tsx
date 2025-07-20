@@ -416,11 +416,11 @@ const TierDetails: React.FC = () => {
             <div className="bg-blue-50 rounded-xl px-8 py-6 mb-6 flex flex-col gap-4">
               <div className="flex flex-row justify-between">
                 <span className="font-medium text-gray-600">Full Name:</span>
-                <span className="font-semibold text-blue-900">{user?.full_name || user?.name || "-"}</span>
+                <span className="font-semibold text-blue-900">{user?.full_name || user?.name || ""}</span>
               </div>
               <div className="flex flex-row justify-between">
                 <span className="font-medium text-gray-600">Email:</span>
-                <span className="font-semibold text-blue-900">{user?.email || "-"}</span>
+                <span className="font-semibold text-blue-900">{user?.email || ""}</span>
               </div>
               <div className="flex flex-row justify-between">
                 <span className="font-medium text-gray-600">Category:</span>

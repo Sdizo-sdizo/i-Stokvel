@@ -4,7 +4,6 @@ import {
   Shield,
   BellRing,
   Lock,
-  Trash2,
   ChevronRight, // Use ChevronRight for the "View" button icon
   Mail, // for email notification toggle
   Bell, // for push notification toggle
