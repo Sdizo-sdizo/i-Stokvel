@@ -47,7 +47,7 @@ const Login: React.FC = () => {
       if (result.success) {
         console.log('Login successful, redirecting to:', result.redirectTo);
         setLoading(false);
-        navigate(result.redirectTo);
+        navigate(result.redirectTo || '/dashboard');
       } else {
         console.error('Login failed:', result.message);
         setError(result.message);

@@ -1,10 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import realistic from '../assets/realistic.png';
-import stokvelHero from '../assets/stokvel-hero-section (4).png';
 import Button from '../components/Button';
 import Layout from '../components/Layout';
 import ChatBot from '../components/ChatBot';
+import stokvelHero from '../assets/stokvel-hero-section.png'; // <-- Added import
 
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
