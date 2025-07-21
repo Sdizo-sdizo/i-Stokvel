@@ -1,6 +1,7 @@
 import { authAPI } from '../services/api';
 import api from '../services/api';
 
+// Signup
 export const signup = async (userData: {
   fullName: string;
   email: string;
@@ -8,8 +9,6 @@ export const signup = async (userData: {
   phoneNumber: string;
 }) => {
   try {
-    console.log('Sending registration data:', userData);
-    
     const response = await authAPI.register({
       full_name: userData.fullName,
       email: userData.email,
@@ -17,10 +16,7 @@ export const signup = async (userData: {
       phone: userData.phoneNumber,
       confirm_password: userData.password
     });
-    
-    console.log('Registration response:', response.data);
-    
-    // Check for successful registration
+
     if (response.data && (response.data.message?.includes('successfully') || response.data.user_id)) {
       return { 
         success: true, 
@@ -29,13 +25,11 @@ export const signup = async (userData: {
         user: response.data.user
       };
     }
-    
     return {
       success: false,
       message: response.data?.error || 'Signup failed'
     };
   } catch (error: any) {
-    console.error('Signup error details:', error.response?.data);
     return {
       success: false,
       message: error.response?.data?.error || 'Signup failed. Please try again.'
@@ -43,11 +37,11 @@ export const signup = async (userData: {
   }
 };
 
+// Login
 export const login = async (email: string, password: string) => {
   try {
     const response = await authAPI.login(email, password);
 
-    // 2FA required branch
     if (response.data.two_factor_required) {
       return {
         two_factor_required: true,
@@ -56,9 +50,7 @@ export const login = async (email: string, password: string) => {
       };
     }
 
-    // Normal login branch
     const { access_token, user } = response.data;
-    // Map profile_picture to profilePicture
     const mappedUser = {
       ...user,
       profilePicture: user.profile_picture,
@@ -73,7 +65,6 @@ export const login = async (email: string, password: string) => {
       user: mappedUser,
     };
   } catch (error: any) {
-    console.error('Login error:', error);
     return {
       success: false,
       message: error.response?.data?.error || 'Login failed. Please check your credentials.',
@@ -81,60 +72,43 @@ export const login = async (email: string, password: string) => {
   }
 };
 
+// Logout
 export const logout = () => {
   try {
-    // Clear auth state
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    
-    // Attempt to call logout endpoint
     api.post('/api/auth/logout').catch((error: any) => {
-      console.error('Logout API call failed:', error);
+      // Optionally log error
     });
-    
-    // Redirect to login page
     window.location.href = '/login';
   } catch (error: any) {
-    console.error('Logout error:', error);
-    // Force redirect even if there's an error
     window.location.href = '/login';
   }
 };
 
+// Auth helpers
 export const isAuthenticated = (): boolean => {
   try {
     const token = localStorage.getItem('token');
     if (!token) return false;
-    
-    // Validate token structure
     const parts = token.split('.');
-    if (parts.length !== 3) {
-      throw new Error('Invalid token format');
-    }
-    
+    if (parts.length !== 3) throw new Error('Invalid token format');
     const tokenData = JSON.parse(atob(parts[1]));
     const expirationTime = tokenData.exp * 1000;
     const currentTime = Date.now();
-    
-    // Check if token is expired or about to expire
     if (expirationTime <= currentTime) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       return false;
     }
-    
-    // SECURITY FIX: Check if user is verified
     const user = getCurrentUser();
     if (!user || !user.is_verified) {
-      // Clear invalid authentication data
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       return false;
     }
-    
     return true;
-  } catch (error) {
-    console.error('Token validation error:', error);
+  } catch {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     return false;
@@ -146,10 +120,7 @@ export const getCurrentUser = () => {
   if (!userStr) return null;
   try {
     const user = JSON.parse(userStr);
-    // SECURITY FIX: Return null if user is not verified
-    if (!user.is_verified) {
-      return null;
-    }
+    if (!user.is_verified) return null;
     return user;
   } catch {
     return null;
@@ -162,9 +133,7 @@ export const hasRole = (role: 'admin' | 'member'): boolean => {
 };
 
 export const requireRole = (role: 'admin' | 'member'): boolean => {
-  if (!isAuthenticated()) {
-    return false;
-  }
+  if (!isAuthenticated()) return false;
   return hasRole(role);
 };
 
@@ -173,9 +142,9 @@ export const getUserRole = () => {
   return user?.role || 'member';
 };
 
+// Email verification
 export const verifyEmailCode = async (email: string, verificationCode: string) => {
   try {
-    // Clean the verification code by removing any spaces
     const cleanCode = verificationCode.replace(/\s/g, '');
     const response = await authAPI.verifyEmail(email, cleanCode);
     return {
@@ -183,7 +152,6 @@ export const verifyEmailCode = async (email: string, verificationCode: string) =
       message: response.data.message || 'Account verified successfully'
     };
   } catch (error: any) {
-    console.error('Verification error:', error);
     return {
       success: false,
       message: error.response?.data?.error || 'Verification failed'
@@ -206,10 +174,11 @@ export const resendEmailVerificationCode = async (email: string) => {
   }
 };
 
+// Phone verification
 export const verifyPhoneCode = async (phone: string, verificationCode: string) => {
   try {
     const response = await authAPI.verifyPhone(phone, verificationCode);
-    return response.data; // This will include access_token and user if backend sends them
+    return response.data;
   } catch (error: any) {
     return {
       success: false,
@@ -234,7 +203,6 @@ export const resendSmsVerificationCode = async (phone: string) => {
 };
 
 export async function sendSmsVerificationCode(phone: string) {
-  // Use the axios instance directly
   return api.post('/api/auth/send-otp', { phone })
     .then((res: any) => res.data)
     .catch((err: any) => ({ success: false, message: err?.response?.data?.message || 'Failed to send code' }));

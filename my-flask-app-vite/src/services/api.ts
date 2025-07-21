@@ -14,7 +14,6 @@ const api = axios.create({
 // Request interceptor: Attach token if present
 api.interceptors.request.use(
   (config) => {
-    // Use 'access_token' to match what your backend returns on login
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -28,10 +27,8 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // SECURITY FIX: Handle verification errors
     if (error.response?.status === 403 && 
         error.response?.data?.error?.includes('verify your email')) {
-      // Clear authentication data and redirect to login
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';
@@ -91,7 +88,7 @@ export const stokvelAPI = {
   getStokvelDetails: (id: string) => api.get(`/api/groups/${id}`),
   joinStokvel: (category: string, tier: string, amount: number) =>
     api.post(`/api/stokvel/join-group`, { category, tier, amount }),
-  getMyGroups: () => api.get('/api/groups/my-groups'), // or '/api/groups/available' if that's your endpoint
+  getMyGroups: () => api.get('/api/groups/my-groups'),
   getClaimableAmount: (groupId: string) => api.get(`/api/groups/${groupId}/claimable-amount`),
   getGroupRules: (groupId: string) => api.get(`/api/groups/${groupId}/rules`),
 };
@@ -103,10 +100,7 @@ export const adminAPI = {
   getActivity: () => axios.get('/api/admin/activity'),
   getAnnouncements: () => axios.get('/api/admin/announcements'),
   getGroups: () => api.get('/api/admin/groups'),
-  createGroup: (data: any) => {
-    console.log("API: Creating group with data:", data);
-    return api.post('/api/admin/groups', data);
-  },
+  createGroup: (data: any) => api.post('/api/admin/groups', data),
   updateGroup: (id: number, data: any) => api.put(`/api/admin/groups/${id}`, data),
   deleteGroup: (id: number) => api.delete(`/api/admin/groups/${id}`),
   getJoinRequests: () => api.get('/api/admin/join-requests'),
@@ -142,18 +136,6 @@ export const dashboardAPI = {
   getContributions: () => api.get('/api/dashboard/contributions')
 };
 
-// Polls and Meetings
-// const getPolls = async (): Promise<any> => api.get('/api/polls');
-// const createPoll = async (pollData: any): Promise<any> => api.post('/api/polls', pollData);
-// const getMeetings = async (): Promise<any> => api.get('/api/meetings');
-// const createMeeting = async (meetingData: any): Promise<any> => api.post('/api/meetings', meetingData);
-
-// Withdrawals
-// const getWithdrawals = async (): Promise<any> => api.get('/api/withdrawals');
-// const createWithdrawal = async (withdrawalData: any): Promise<any> => api.post('/api/withdrawals', withdrawalData);
-// const approveWithdrawal = async (withdrawalId: any): Promise<any> => api.post(`/api/withdrawals/${withdrawalId}/approve`);
-// const rejectWithdrawal = async (withdrawalId: any): Promise<any> => api.post(`/api/withdrawals/${withdrawalId}/reject`);
-
 // Wallet API calls
 export const walletAPI = {
   getWalletData: () => api.get('/api/wallet'),
@@ -185,4 +167,4 @@ export const savingsGoalAPI = {
   set: (data: { label: string; target: number }) => api.post('/api/user/savings-goal', data),
 };
 
-export default api; 
+export default api;
