@@ -352,14 +352,16 @@ const Signup: React.FC = () => {
     try {
       const result = await signup(formData);
       
-      if (result.success) {
+      if (result && result.success) {
         setUserEmailForVerification(formData.email);
         setUserPhoneForVerification(formData.phoneNumber);
         setVerificationMethod('email');
         setShowOtpVerification(true);
         setSuccessMessage('Account created successfully! Please check your email for verification code.');
-      } else {
+      } else if (result) {
         setErrors({ submit: result.message });
+      } else {
+        setErrors({ submit: "An unexpected error occurred." });
       }
     } catch (error: any) {
       setErrors({ submit: error.response?.data?.error || 'Signup failed. Please try again.' });
@@ -389,11 +391,13 @@ const Signup: React.FC = () => {
         result = await verifyPhoneCode(userPhoneForVerification, verificationCode);
       }
 
-      if (result.success) {
+      if (result && result.success) {
         toast.success('Account verified successfully!');
         navigate('/login');
-      } else {
+      } else if (result) {
         setOtpError(result.message);
+      } else {
+        setOtpError("An unexpected error occurred.");
       }
     } catch (error: any) {
       setOtpError(error.response?.data?.error || 'Verification failed. Please try again.');
@@ -417,12 +421,9 @@ const Signup: React.FC = () => {
         result = await resendSmsVerificationCode(userPhoneForVerification);
       }
       
-      if (result.success) {
-        // Show success message
+      if (result && result.success) {
         setResendMessage('New verification code sent successfully!');
         setOtp(['', '', '', '', '', '']);
-        
-        // Start countdown timer (30 seconds)
         setResendCountdown(30);
         const timer = setInterval(() => {
           setResendCountdown((prev) => {
@@ -433,16 +434,16 @@ const Signup: React.FC = () => {
             return prev - 1;
           });
         }, 1000);
-        
-        // Clear success message after 3 seconds
         setTimeout(() => {
           setResendMessage('');
         }, 3000);
-        
         toast.success('New verification code sent!');
-      } else {
+      } else if (result) {
         toast.error(result.message);
         setOtpError(result.message);
+      } else {
+        toast.error("An unexpected error occurred.");
+        setOtpError("An unexpected error occurred.");
       }
     } catch (error: any) {
       const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Failed to resend code. Please try again.';

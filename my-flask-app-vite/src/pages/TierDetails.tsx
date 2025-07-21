@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Gift, Users, TrendingUp, CheckCircle, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
 
 // --- Paste your full tierDetails object here ---
 const tierDetails: Record<string, Record<string, {
@@ -29,7 +28,6 @@ function getAmountsInRange(range: string) {
 
 const TierDetails: React.FC = () => {
   const { category, tier } = useParams();
-  const { user } = useAuth();
 
   function capitalize(str: string) {
     if (!str) return "";
@@ -50,8 +48,6 @@ const TierDetails: React.FC = () => {
   const details = tierDetails[categoryKey][tierKey];
   const amounts = getAmountsInRange(details.amountRange);
   const [selectedAmount, setSelectedAmount] = useState(amounts[0] || "");
-  const [showModal, setShowModal] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
   const [isPending, setIsPending] = useState(false);
 
   useEffect(() => {
@@ -72,40 +68,6 @@ const TierDetails: React.FC = () => {
         setIsPending(pending);
       });
   }, [category, tier, selectedAmount]);
-
-  const handleJoin = (amount: number) => {
-    fetch('/api/stokvel/join-group', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
-      body: JSON.stringify({
-        category: category || "",
-        tier: tier || "",
-        amount,
-      }),
-    })
-      .then(res => res.json())
-      .then(() => {
-        fetch('/api/user/join-requests', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json'
-          }
-        })
-          .then(res => res.json())
-          .then(data => {
-            const pending = data.some((req: any) =>
-              req.category === (category || "") &&
-              req.tier === (tier || "") &&
-              req.amount === selectedAmount &&
-              req.status === "pending"
-            );
-            setIsPending(pending);
-          });
-      });
-  };
 
   const faqs = [
     {
@@ -146,7 +108,6 @@ const TierDetails: React.FC = () => {
             <p className="text-lg text-gray-600 mb-4">{details.description}</p>
             <button
               className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold shadow hover:bg-blue-700 transition mt-4 disabled:opacity-50"
-              onClick={() => setShowModal(true)}
               disabled={isPending}
             >
               {isPending ? "Pending Approval" : "Join Now"}
@@ -262,10 +223,6 @@ const TierDetails: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Modal and Success Modal code remains unchanged, just ensure you use: */}
-      {/* {user?.fullName || (user as any)?.full_name || ""} for user name */}
-      {/* capitalize(category || "") and capitalize(tier || "") everywhere */}
     </div>
   );
 };

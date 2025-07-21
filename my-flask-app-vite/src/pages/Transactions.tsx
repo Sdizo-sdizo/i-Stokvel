@@ -45,14 +45,13 @@ const Transactions: React.FC = () => {
     fetchTransactions();
   }, []);
 
-  // Fetch group categories
+  // Fetch group categories (removed unused 'data' variable)
   useEffect(() => {
     const fetchCategories = async () => {
       const token = localStorage.getItem("token");
-      const res = await fetch('/api/admin/group-categories', {
+      await fetch('/api/admin/group-categories', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      const data = await res.json();
       // setCategories(data); // This line was commented out in the original file
     };
     fetchCategories();

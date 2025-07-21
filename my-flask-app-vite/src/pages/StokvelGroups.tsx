@@ -4,7 +4,10 @@ import { toast } from "react-hot-toast";
 import { groupService } from '../services/groupService';
 import { useNavigate } from "react-router-dom";
 
-const tierDetails: Record<string, Record<string, {
+// Define allowed categories for type safety
+type Category = 'Savings' | 'Burial' | 'Investment' | 'Business';
+
+const tierDetails: Record<Category, Record<string, {
   amountRange: string;
   interest: string;
   access: string;
@@ -12,6 +15,7 @@ const tierDetails: Record<string, Record<string, {
   support: string;
 }>> = {
   Savings: {
+    // ... existing tier details ...
     Bronze: {
       amountRange: "R200–R450",
       interest: "2.5% p.a.",
@@ -42,6 +46,7 @@ const tierDetails: Record<string, Record<string, {
     }
   },
   Burial: {
+    // ... existing tier details ...
     Bronze: {
       amountRange: "R100–R300",
       interest: "1.0% p.a.",
@@ -72,6 +77,7 @@ const tierDetails: Record<string, Record<string, {
     }
   },
   Investment: {
+    // ... existing tier details ...
     Bronze: {
       amountRange: "R500–R1000",
       interest: "4.0% p.a.",
@@ -102,6 +108,7 @@ const tierDetails: Record<string, Record<string, {
     }
   },
   Business: {
+    // ... existing tier details ...
     Bronze: {
       amountRange: "R1000–R2500",
       interest: "3.0% p.a.",
@@ -133,7 +140,7 @@ const tierDetails: Record<string, Record<string, {
   }
 };
 
-const categoryTiers = {
+const categoryTiers: Record<Category, { name: string; amount: string; color: string }[]> = {
   Savings: [
     { name: "Bronze", amount: "R300", color: "bg-green-100 text-green-800" },
     { name: "Silver", amount: "R700", color: "bg-green-200 text-green-900" },
@@ -163,47 +170,46 @@ const categoryTiers = {
 const StokvelGroups: React.FC = () => {
   const [search, setSearch] = useState("");
   const [allGroups, setAllGroups] = useState<any[]>([]);
-  const [categories, setCategories] = useState<string[]>([]);
-  const [activeCategory, setActiveCategory] = useState<string>("");
+  const [activeCategory, setActiveCategory] = useState<Category>("Savings");
   const [joinRequests, setJoinRequests] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState("Savings");
-  const [openTier, setOpenTier] = useState<{ name: string, category: string } | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<Category>("Savings");
+  const [openTier, setOpenTier] = useState<{ name: string, category: Category } | null>(null);
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [confirming, setConfirming] = useState(false);
 
   const navigate = useNavigate();
 
   // Fetch join requests
-    const fetchRequests = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) return;
-        const res = await fetch("/api/user/join-requests", {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setJoinRequests(
-            data.map((req: any) => ({
-              groupId: req.group_id,
-              groupName: req.group_name,
-              category: req.category,
-              tier: req.tier,
-              amount: req.amount,
-              status: req.status,
-              reason: req.reason,
-              createdAt: req.created_at,
-            }))
-          );
+  const fetchRequests = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      const res = await fetch("/api/user/join-requests", {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
-      } catch (err) {
-        console.error("Failed to fetch join requests:", err);
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setJoinRequests(
+          data.map((req: any) => ({
+            groupId: req.group_id,
+            groupName: req.group_name,
+            category: req.category,
+            tier: req.tier,
+            amount: req.amount,
+            status: req.status,
+            reason: req.reason,
+            createdAt: req.created_at,
+          }))
+        );
       }
-    };
+    } catch (err) {
+      console.error("Failed to fetch join requests:", err);
+    }
+  };
 
   // Fetch all groups and organize by category
   useEffect(() => {
@@ -212,8 +218,7 @@ const StokvelGroups: React.FC = () => {
         const res = await groupService.getAvailableGroups();
         const groups = res.data;
         setAllGroups(groups);
-        const uniqueCategories = [...new Set(groups.map((group: any) => group.category))];
-        setCategories(uniqueCategories);
+        const uniqueCategories = [...new Set(groups.map((group: any) => group.category))] as Category[];
         if (uniqueCategories.length > 0 && !activeCategory) {
           setActiveCategory(uniqueCategories[0]);
         }
@@ -229,12 +234,6 @@ const StokvelGroups: React.FC = () => {
   useEffect(() => {
     fetchRequests();
   }, []);
-
-  // Filter groups by active category
-  const filteredGroups = allGroups.filter(group => 
-    group.category === activeCategory &&
-    group.name.toLowerCase().includes(search.toLowerCase())
-  );
 
   // Get join request status for a group/tier/amount
   const getRequestStatus = (category: string, tier: string, amount: number) => {
@@ -260,12 +259,6 @@ const StokvelGroups: React.FC = () => {
       }
     }
     return amounts;
-  }
-
-  // Find groupId for a given category/tier
-  function findGroupId(category: string, tier: string) {
-    const group = allGroups.find(g => g.category === category && g.tier === tier);
-    return group ? group.id : null;
   }
 
   // Handle join
@@ -344,7 +337,7 @@ const StokvelGroups: React.FC = () => {
           {Object.keys(categoryTiers).map((cat) => (
             <button
               key={cat}
-              onClick={() => setSelectedCategory(cat)}
+              onClick={() => setSelectedCategory(cat as Category)}
               className={`px-4 py-2 rounded-lg font-medium transition ${
                 selectedCategory === cat
                   ? "bg-blue-100 text-blue-700"

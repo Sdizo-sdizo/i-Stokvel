@@ -77,11 +77,11 @@ export const logout = () => {
   try {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    api.post('/api/auth/logout').catch((error: any) => {
+    api.post('/api/auth/logout').catch(() => {
       // Optionally log error
     });
     window.location.href = '/login';
-  } catch (error: any) {
+  } catch {
     window.location.href = '/login';
   }
 };

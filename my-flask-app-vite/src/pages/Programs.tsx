@@ -7,10 +7,7 @@ import {
   Briefcase, 
   TrendingUp,
   ArrowRight,
-  Users,
-  Calendar,
-  DollarSign,
-  Activity
+  Users
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -223,4 +220,4 @@ const Programs: React.FC = () => {
   );
 };
 
-export default Programs; 
+export default Programs;
