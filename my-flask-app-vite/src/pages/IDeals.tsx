@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-// import DealDetailModal from "../components/DealDetailModal"; // Remove if not used
 
 export const IDEALS = [
   {
@@ -17,13 +16,8 @@ export const IDEALS = [
 
 const categories = ["All", ...Array.from(new Set(IDEALS.map(d => d.category)))];
 
-// Optionally, define a type for better type safety
-// type Deal = typeof IDEALS[number];
-// const [selectedDeal, setSelectedDeal] = useState<Deal | null>(null);
-
 const IDeals: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedDeal, setSelectedDeal] = useState<any>(null);
 
   const filteredDeals =
     selectedCategory === "All"
@@ -32,7 +26,37 @@ const IDeals: React.FC = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-10">
-      {/* ...rest of your UI remains unchanged... */}
+      {/* Render your deals UI here */}
+      <h1 className="text-2xl font-bold mb-4">i-Deals</h1>
+      <div className="mb-4">
+        {categories.map(category => (
+          <button
+            key={category}
+            className={`mr-2 px-4 py-2 rounded ${
+              selectedCategory === category
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700"
+            }`}
+            onClick={() => setSelectedCategory(category)}
+          >
+            {category}
+          </button>
+        ))}
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {filteredDeals.map(deal => (
+          <div key={deal.id} className="bg-white rounded shadow p-4">
+            <img src={deal.image} alt={deal.title} className="w-full h-40 object-cover rounded mb-2" />
+            <h2 className="text-lg font-semibold">{deal.title}</h2>
+            <p className="text-gray-600">{deal.description}</p>
+            <div className="mt-2 text-sm text-blue-700">{deal.price}</div>
+            <div className="text-xs text-gray-500">Partner: {deal.partner}</div>
+            <a href={deal.link} className="inline-block mt-2 text-blue-600 hover:underline">
+              View Deal
+            </a>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
