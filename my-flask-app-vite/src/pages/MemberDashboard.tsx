@@ -91,7 +91,7 @@ const MemberDashboard: React.FC = () => {
               <div className="flex items-center justify-between">
                 <span className="text-gray-600">Member Since</span>
                 <span className="font-medium">
-                  {new Date(memberData?.stokvelInfo?.joinDate).toLocaleDateString()}
+                  {new Date(memberData?.stokvelInfo?.joinDate || Date.now()).toLocaleDateString()}
                 </span>
               </div>
               <div className="flex items-center justify-between">
@@ -116,7 +116,7 @@ const MemberDashboard: React.FC = () => {
               <div className="flex items-center justify-between">
                 <span className="text-gray-600">Next Payment</span>
                 <span className="font-medium">
-                  {new Date(memberData?.contributionStatus?.nextPayment).toLocaleDateString()}
+                  {new Date(memberData?.contributionStatus?.nextPayment || Date.now()).toLocaleDateString()}
                 </span>
               </div>
               <button className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">

@@ -3,21 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import {
   Archive, // Example icon for Marketplace tab
   Heart, // Example icon for My Offers
-  Package, // Example icon for Track Orders
   Users, // Example icon for Partner Portal
-  PiggyBank, // Example icon for Savings
-  ShoppingBasket, // Example icon for Grocery
-  Cross, // Example icon for Burial
-  Briefcase, // Example icon for Business
-  TrendingUp, // Example icon for Investment
-  ShoppingBag, // Example icon for Marketplace offer card
   ShieldCheck, // Example icon for Verified badge
-  User as UserIcon, // Alias User to avoid conflict
-  CreditCard,
-  CheckCircle,
-  DollarSign,
-  Activity,
-  Shield,
   Search, // Import the Search icon
   Filter // Add Filter icon import
 } from 'lucide-react'; // Import necessary icons
@@ -40,49 +27,6 @@ interface Offer {
   buttonText?: string;
   buttonLink?: string;
 }
-
-const mockOffers: Offer[] = [
-  {
-    id: 1,
-    title: 'R200 OFF Bulk Grocery Combo',
-    description: 'Save big when your stokvel buys in bulk.',
-    logo: '/path/to/marketrw-logo.png', // Placeholder logo path
-    tags: ['Marketrw'],
-    verified: false, // Example, can be true if needed
-    buttonText: 'Use This Offer with My Stokvel',
-    buttonLink: '/marketplace/offer/1' // Example link
-  },
-  {
-    id: 2,
-    title: 'Burial Plan',
-    provider: 'from AVBOB',
-    description: 'Affordable family funeral cover.',
-    tags: ['Tiseficel'], // Example tag
-    verified: false,
-    buttonText: 'Learn More', // Example button for non-direct offers
-    buttonLink: '/marketplace/offer/2' // Example link
-  },
-  {
-    id: 3,
-    title: 'Save R500 on Durban Trip',
-    description: 'Plan your stokvel holiday with us.',
-    tags: ['Travel'],
-    verified: false,
-    buttonText: 'View Packages', // Example button
-    buttonLink: '/marketplace/offer/3' // Example link
-  },
-   {
-    id: 4,
-    title: 'R200 OFF Bulk Grocery Combo', // Duplicating the grocery offer to show the "Verified" version
-    description: 'Save big when your stokvel buys in bulk.\nOffered by Makro Wholesalers', // Added multiline description
-    provider: 'Offered by Makro Wholesalers',
-    verified: true,
-    buttonText: 'Use This Offer with My Stokvel',
-    buttonLink: '/marketplace/offer/4' // Example link
-  }
-  // Add more mock offers as needed
-];
-
 
 // --- Offer Card Component ---
 interface OfferCardProps {
@@ -240,4 +184,4 @@ const Marketplace: React.FC = () => {
   );
 };
 
-export default Marketplace; 
+export default Marketplace;

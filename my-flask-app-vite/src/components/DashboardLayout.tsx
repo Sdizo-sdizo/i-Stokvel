@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, ReactNode } from 'react';
 import { Outlet, useLocation, useNavigate, Link } from 'react-router-dom';
 import { 
   User, 
@@ -57,7 +57,14 @@ const setSeenNotificationIds = (ids: Set<number>) => {
   localStorage.setItem(SEEN_NOTIFICATIONS_KEY, JSON.stringify(Array.from(ids)));
 };
 
-const DashboardLayout = () => {
+interface DashboardLayoutProps {
+    children: ReactNode;
+    user: any; // Or a more specific user type
+    sidebarNavItems: any[]; // Or a more specific nav item type
+    marketplaceNavItem: any; // Or a more specific nav item type
+}
+
+const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -316,7 +323,7 @@ const DashboardLayout = () => {
 
         {/* --- MAIN CONTENT --- */}
         <main className="flex-1 p-6 overflow-y-auto">
-          <Outlet />
+          {children}
         </main>
       </div>
     </div>

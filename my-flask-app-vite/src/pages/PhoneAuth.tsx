@@ -40,27 +40,6 @@ const PhoneAuth: React.FC = () => {
     }
   };
 
-  const handleOtpChange = (index: number, value: string) => {
-    if (value.length > 1) {
-      const values = value.split('').slice(0, 6);
-      setOtp(values.concat(Array(6 - values.length).fill('')));
-      if (values.length === 6) {
-        setTimeout(() => {
-          handleVerifyOtp(new Event('submit') as any, values.join(''));
-        }, 100);
-      }
-      return;
-    }
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
-    if (index === 5 && value) {
-      setTimeout(() => {
-        handleVerifyOtp(new Event('submit') as any, newOtp.join(''));
-      }, 100);
-    }
-  };
-
   const handleVerifyOtp = async (e: React.FormEvent, code?: string) => {
     e.preventDefault();
     const verificationCode = code || otp.join('');
