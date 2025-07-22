@@ -18,21 +18,11 @@ import {
   DollarSign,
   Activity,
   Shield,
-  ChevronRight,
-  LayoutDashboard,
-  Calendar,
-  BarChart2,
-  MessageSquare,
-  Home,
-  FileText,
-  UserPlus,
-  ArrowLeft, // Import the ArrowLeft icon
   Search, // Import the Search icon
   Filter // Add Filter icon import
 } from 'lucide-react'; // Import necessary icons
 import { toast } from 'react-hot-toast';
 import { marketplaceAPI } from '../services/api';
-import { useAuth } from '../hooks/useAuth';
 import MarketplacePurchase from "./MarketplacePurchase";
 import PartnerPortal from "./PartnerPortal";
 import IDeals from "./IDeals";
@@ -128,7 +118,9 @@ const OfferCard: React.FC<OfferCardProps> = ({ offer, navigate }) => {
            <button
              onClick={() => {
                try {
-                 navigate(offer.buttonLink);
+                 if (offer.buttonLink) {
+                   navigate(offer.buttonLink);
+                 }
                } catch (error) {
                  console.error('Navigation error:', error);
                  toast.error('Failed to navigate to offer details');
@@ -145,29 +137,10 @@ const OfferCard: React.FC<OfferCardProps> = ({ offer, navigate }) => {
 };
 
 const Marketplace: React.FC = () => {
-  const { user } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('marketplace');
   const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // Define the sidebar navigation items
-  const sidebarNavItems = [
-    { id: 'user', label: 'User', icon: UserIcon, path: '/dashboard/profile' },
-    { id: 'digital-wallet', label: 'Digital Wallet', icon: CreditCard, path: '/dashboard/payment' },
-    { id: 'kyc', label: 'KYC', icon: CheckCircle, path: '/dashboard/kyc' },
-    { id: 'beneficiaries', label: 'Beneficiaries', icon: Users, path: '/dashboard/beneficiaries' },
-    { id: 'refer', label: 'Refer & Earn', icon: Users, path: '/dashboard/refer' },
-    { id: 'groups', label: 'Stokvel Groups', icon: Briefcase, path: '/dashboard/groups' },
-    { id: 'separator', separator: true }, // Add a separator
-  ];
-
-  // Define the marketplace navigation item
-  const marketplaceNavItem = {
-    id: 'marketplace',
-    label: 'Marketplace',
-    icon: ShoppingBag,
-    path: '/dashboard/marketplace'
-  };
 
   useEffect(() => {
     const fetchOffers = async () => {
@@ -257,7 +230,7 @@ const Marketplace: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {offers.map(offer => (
-          <OfferCard key={offer.id} offer={offer} navigate={useNavigate()} />
+          <OfferCard key={offer.id} offer={offer} navigate={navigate} />
         ))}
       </div>
       {activeTab === "marketplace" && <MarketplacePurchase />}

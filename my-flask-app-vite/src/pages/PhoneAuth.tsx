@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { sendSmsVerificationCode, verifyPhoneCode, resendSmsVerificationCode, login } from '../utils/auth';
+import { sendSmsVerificationCode, verifyPhoneCode, resendSmsVerificationCode } from '../utils/auth';
 import { toast } from 'react-toastify';
 
 const Spinner = ({ className = "h-5 w-5" }) => (
@@ -16,10 +16,7 @@ const PhoneAuth: React.FC = () => {
   const [step, setStep] = useState<'input' | 'verify' | 'password'>('input');
   const [isLoading, setIsLoading] = useState(false);
   const [otpError, setOtpError] = useState('');
-  const [codeSent, setCodeSent] = useState(false);
   const [verifying, setVerifying] = useState(false);
-  const [password, setPassword] = useState('');
-  const [loginError, setLoginError] = useState('');
   const navigate = useNavigate();
 
   // Helper to mask phone except last 4 digits
@@ -37,7 +34,6 @@ const PhoneAuth: React.FC = () => {
     setIsLoading(false);
     if (result.success) {
       setStep('verify');
-      setCodeSent(true);
       toast.success('Verification code sent!');
     } else {
       toast.error(result.message || 'Failed to send verification code.');
@@ -102,31 +98,6 @@ const PhoneAuth: React.FC = () => {
     setOtpError('');
     await resendSmsVerificationCode(phone);
     setOtp(['', '', '', '', '', '']);
-    setCodeSent(true);
-    setIsLoading(false);
-  };
-
-  const handleLoginAfterOtp = async (phone, password) => {
-    const result = await login(phone, password);
-    if (result.success) {
-      // Store token is handled in your login util
-      navigate('/dashboard');
-    } else {
-      toast.error(result.message || 'Login failed');
-    }
-  };
-
-  const handlePasswordSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setLoginError('');
-    const result = await login(phone, password); // Your login util must support phone+password
-    if (result.success) {
-      toast.success('Login successful! Redirecting...');
-      navigate('/dashboard');
-    } else {
-      setLoginError(result.message || 'Login failed. Please try again.');
-    }
     setIsLoading(false);
   };
 

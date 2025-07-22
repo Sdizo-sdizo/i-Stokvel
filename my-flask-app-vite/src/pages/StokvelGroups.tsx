@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Search, Filter, CheckCircle, Star, Users, ShieldCheck, TrendingUp, Gift } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { groupService } from '../services/groupService';
 import { useNavigate } from "react-router-dom";
@@ -169,7 +168,6 @@ const categoryTiers: Record<Category, { name: string; amount: string; color: str
 
 const StokvelGroups: React.FC = () => {
   const [search, setSearch] = useState("");
-  const [allGroups, setAllGroups] = useState<any[]>([]);
   const [activeCategory, setActiveCategory] = useState<Category>("Savings");
   const [joinRequests, setJoinRequests] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -217,7 +215,6 @@ const StokvelGroups: React.FC = () => {
       try {
         const res = await groupService.getAvailableGroups();
         const groups = res.data;
-        setAllGroups(groups);
         const uniqueCategories = [...new Set(groups.map((group: any) => group.category))] as Category[];
         if (uniqueCategories.length > 0 && !activeCategory) {
           setActiveCategory(uniqueCategories[0]);

@@ -1,21 +1,40 @@
 import { motion } from 'framer-motion';
 import {
-  Users,
-  CreditCard,
-  Calendar,
   Bell,
-  TrendingUp,
   Clock
 } from 'lucide-react';
-import DashboardLayout from '../../components/DashboardLayout';
-import { memberNavItems, marketplaceNavItem } from '../../navItems';
+import DashboardLayout from '../components/DashboardLayout';
+import { memberNavItems, marketplaceNavItem } from '../navItems';
 import { useAuth } from '../hooks/useAuth';
 import api from '../services/api';
 import { useEffect, useState } from 'react';
 
+interface MemberData {
+  stokvelInfo: {
+    groupName: string;
+    joinDate: string;
+    monthlyContribution: number;
+  };
+  contributionStatus: {
+    nextPayment: string;
+  };
+  announcements: {
+    id: number;
+    title: string;
+    message: string;
+    date: string;
+  }[];
+  recentActivity: {
+    id: number;
+    title: string;
+    description: string;
+    date: string;
+  }[];
+}
+
 const MemberDashboard: React.FC = () => {
   const { user } = useAuth();
-  const [memberData, setMemberData] = useState<any>(null);
+  const [memberData, setMemberData] = useState<MemberData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -67,17 +86,17 @@ const MemberDashboard: React.FC = () => {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-gray-600">Group Name</span>
-                <span className="font-medium">{memberData.stokvelInfo?.groupName}</span>
+                <span className="font-medium">{memberData?.stokvelInfo?.groupName}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-gray-600">Member Since</span>
                 <span className="font-medium">
-                  {new Date(memberData.stokvelInfo?.joinDate).toLocaleDateString()}
+                  {new Date(memberData?.stokvelInfo?.joinDate).toLocaleDateString()}
                 </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-gray-600">Monthly Contribution</span>
-                <span className="font-medium">R {memberData.stokvelInfo?.monthlyContribution}</span>
+                <span className="font-medium">R {memberData?.stokvelInfo?.monthlyContribution}</span>
               </div>
             </div>
           </motion.div>
@@ -97,7 +116,7 @@ const MemberDashboard: React.FC = () => {
               <div className="flex items-center justify-between">
                 <span className="text-gray-600">Next Payment</span>
                 <span className="font-medium">
-                  {new Date(memberData.contributionStatus?.nextPayment).toLocaleDateString()}
+                  {new Date(memberData?.contributionStatus?.nextPayment).toLocaleDateString()}
                 </span>
               </div>
               <button className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
@@ -114,7 +133,7 @@ const MemberDashboard: React.FC = () => {
           >
             <h2 className="text-lg font-semibold mb-4">Announcements</h2>
             <div className="space-y-4">
-              {memberData.announcements.map((announcement) => (
+              {memberData?.announcements.map((announcement: { id: number; title: string; message: string; date: string; }) => (
                 <div
                   key={announcement.id}
                   className="p-4 bg-gray-50 rounded-lg"
@@ -141,7 +160,7 @@ const MemberDashboard: React.FC = () => {
         >
           <h2 className="text-lg font-semibold mb-4">Recent Activity</h2>
           <div className="space-y-4">
-            {memberData.recentActivity.map((activity) => (
+            {memberData?.recentActivity.map((activity: { id: number; title: string; description: string; date: string; }) => (
               <div
                 key={activity.id}
                 className="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg"

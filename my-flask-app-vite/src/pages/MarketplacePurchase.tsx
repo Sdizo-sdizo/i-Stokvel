@@ -17,8 +17,10 @@ const PROVIDERS = {
   voucher: ["Netflix", "Google Play", "Takealot"],
 };
 
+type ItemType = keyof typeof PROVIDERS;
+
 const MarketplacePurchase: React.FC = () => {
-  const [itemType, setItemType] = useState("airtime");
+  const [itemType, setItemType] = useState<ItemType>("airtime");
   const [provider, setProvider] = useState("");
   const [amount, setAmount] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("wallet");
@@ -82,7 +84,7 @@ const MarketplacePurchase: React.FC = () => {
                   ? "bg-blue-50 border-blue-500 text-blue-700"
                   : "bg-gray-50 border-gray-200 text-gray-500 hover:border-blue-300"
                 }`}
-              onClick={() => setItemType(type.key)}
+              onClick={() => setItemType(type.key as ItemType)}
               type="button"
             >
               <span className="mb-2">{React.cloneElement(type.icon, { className: "w-10 h-10" })}</span>
@@ -101,7 +103,7 @@ const MarketplacePurchase: React.FC = () => {
                 required
               >
                 <option value="">Select</option>
-                {PROVIDERS[itemType].map((prov) => (
+                {PROVIDERS[itemType].map((prov: string) => (
                   <option key={prov} value={prov}>{prov}</option>
                 ))}
               </select>

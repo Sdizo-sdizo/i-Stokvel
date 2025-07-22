@@ -6,8 +6,7 @@ import {
   Cross, 
   Briefcase, 
   TrendingUp,
-  ArrowRight,
-  Users
+  ArrowRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 

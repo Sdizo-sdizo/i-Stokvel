@@ -4,6 +4,16 @@ import { motion } from 'framer-motion';
 import { Calendar, User } from 'lucide-react'; // Icons for date and author
 import { newsAPI } from '../services/api';
 
+interface Article {
+  id: number;
+  title: string;
+  image: string;
+  excerpt: string;
+  date: string;
+  author: string;
+  link: string;
+}
+
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -20,7 +30,7 @@ const itemVariants = {
 };
 
 const News: React.FC = () => {
-  const [newsArticles, setNewsArticles] = useState([]);
+  const [newsArticles, setNewsArticles] = useState<Article[]>([]);
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -62,7 +72,7 @@ const News: React.FC = () => {
           whileInView="visible"
           viewport={{ once: true, amount: 0.1 }}
         >
-          {newsArticles.map(article => (
+          {newsArticles.map((article: Article) => (
             <motion.div
               key={article.id}
               className="bg-white rounded-xl shadow-lg overflow-hidden h-full flex flex-col transform hover:scale-[1.02] transition-transform duration-300"
